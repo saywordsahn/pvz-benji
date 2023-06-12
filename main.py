@@ -50,6 +50,15 @@ while True:
             pygame.quit()
             exit(0)
 
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            btn = pygame.mouse
+            x = pos[0]
+            y = pos[1]
+            print("x = {}, y = {}".format(pos[0], pos[1]))
+
+
+
     ################################
     # UPDATE
     ################################
@@ -69,8 +78,8 @@ while True:
     # DRAW
     ################################
     screen.blit(bg, (0, 0))
-
-    zombie_group.draw(screen)
+    zombie.draw(screen)
+    # zombie_group.draw(screen)
     plant_group.draw(screen)
     bullet_group.draw(screen)
     sun_group.draw(screen)

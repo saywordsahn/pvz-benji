@@ -7,19 +7,27 @@ class Bullet(pygame.sprite.Sprite):
         self.image = pygame.image.load('graphics/Bullets/PeaNormal/PeaNormal_0.png')
         self.rect = self.image.get_rect()
         self.rect.center = (centerx, centery)
-        self.speed = 1
+        self.speed = 2
         self.damage = 20
+
+    # we take two rects and return true if they collide
+    def collided(self, s1, s2):
+        if self.rect.colliderect(s2.hitbox):
+            return True
+
+        return False
 
     def update(self, enemy_group):
         self.rect.x += self.speed
 
 
-        for zombie in enemy_group.sprites():
+        collided = pygame.sprite.spritecollide(self, enemy_group, False, collided = self.collided)
 
-            if pygame.sprite.collide_rect(zombie, self):
-                self.kill()
-                zombie.take_damage(self.damage)
-                print(zombie.hp)
+        for zombie in collided:
+            zombie.take_damage(self.damage)
+            print(zombie.hp)
+            self.kill()
+            return
 
 
         #     print(zombie.hp)
