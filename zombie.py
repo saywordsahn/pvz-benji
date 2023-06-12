@@ -1,4 +1,5 @@
 import pygame
+from animation import Animation
 
 class Zombie(pygame.sprite.Sprite):
 
@@ -10,6 +11,7 @@ class Zombie(pygame.sprite.Sprite):
         self.float_x = 800.0
         self.speed = .15
         self.hp = 100
+        self.walk_animation = Animation('Zombie', 'graphics/Zombies/NormalZombie/Zombie/', 100)
 
         for i in range(22):
             loc = 'graphics/Zombies/NormalZombie/Zombie/zombie_' + str(i) + '.png'
@@ -38,20 +40,17 @@ class Zombie(pygame.sprite.Sprite):
         else:
             self.current_image_index += 1
 
-    def update(self):
+    def update(self, elapsed_time):
 
         if self.hp > 0:
             self.float_x -= self.speed
             self.rect.x = self.float_x
             self.hitbox.x = self.float_x + self.offset_l
 
-            if self.count >= 5:
+            self.walk_animation.update(elapsed_time)
+            self.image = self.walk_animation.get_image()
 
-                self.switch_image()
 
-                self.count = 0
-            else:
-                self.count += 1
 
     def take_damage(self, amount):
         self.hp -= amount

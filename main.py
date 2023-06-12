@@ -69,7 +69,7 @@ while True:
 
 
 
-    zombie.update()
+    zombie.update(elapsed_time)
     peashooter.update(elapsed_time)
     bullet_group.update(zombie_group)
     sun_group.update(elapsed_time)
