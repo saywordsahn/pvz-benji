@@ -1,5 +1,13 @@
 import pygame
 from animation import Animation
+from enum import Enum
+
+class ZombieState(Enum):
+    Alive = 0
+    Dying = 1
+    Dead = 2
+
+
 
 class Zombie(pygame.sprite.Sprite):
 
@@ -11,12 +19,21 @@ class Zombie(pygame.sprite.Sprite):
         self.float_x = 800.0
         self.speed = .15
         self.hp = 100
+
         self.walk_animation = Animation('Zombie', 'graphics/Zombies/NormalZombie/Zombie/', 100)
 
+        # walking animations
         for i in range(22):
             loc = 'graphics/Zombies/NormalZombie/Zombie/zombie_' + str(i) + '.png'
             zombie_img = pygame.image.load(loc)
             self.animations.append(zombie_img)
+
+        # death animation
+        self.death_animations = []
+        for i in range(10):
+            loc = 'graphics/Zombies/NormalZombie/ZombieDie/ZombieDie_' + str(i) + '.png'
+            zombie_img = pygame.image.load(loc)
+            self.death_animations.append(zombie_img)
 
         self.image = self.animations[self.current_image_index]
         self.rect = self.image.get_rect()
@@ -28,6 +45,7 @@ class Zombie(pygame.sprite.Sprite):
 
         self.hitbox = self.rect.inflate(self.inflate_x, self.inflate_y)
         self.hitbox.y += self.offset_t
+        self.state = ZombieState.Alive
         # self.rect.inflate_ip(-100,0)
 
 
@@ -49,11 +67,25 @@ class Zombie(pygame.sprite.Sprite):
 
             self.walk_animation.update(elapsed_time)
             self.image = self.walk_animation.get_image()
+        elif self.hp <= 0 and self.state == ZombieState.Dying:
+
+            self.image = self.death_animations[self.current_image_index]
+            self.current_image_index += 1
+
+            if self.current_image_index == len(self.death_animations):
+                self.state = ZombieState.Dead
+
+
 
 
 
     def take_damage(self, amount):
         self.hp -= amount
+
+        if self.hp <= 0:
+            self.state = ZombieState.Dying
+            self.image = self.death_animations[0]
+            self.current_image_index = 0
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
